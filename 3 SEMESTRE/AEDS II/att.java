@@ -1,3 +1,4 @@
+import java.util.*;
 class att{
 
     public static void printarNum(int num1, int num2){
@@ -11,11 +12,12 @@ class att{
         System.out.println();
     }
     public static void main(String[] args) {
-        String entrada;
-        while((entrada = MyIO.readLine())!= null){
-            String arr[] = entrada.split(" ");
-            printarNum(Integer.parseInt(arr[0]) , Integer.parseInt(arr[1]));
-            entrada = null;
+        Scanner scn = new Scanner(System.in);
+        int x, y;
+        while (scn.hasNext()){
+            x = scn.nextInt();
+            y = scn.nextInt();
+            printarNum(x , y);
         }
     }
 }
