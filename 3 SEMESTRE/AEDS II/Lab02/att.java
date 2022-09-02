@@ -1,3 +1,4 @@
+package Lab02;
 import java.util.*;
 class att{
 
