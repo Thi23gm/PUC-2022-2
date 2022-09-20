@@ -1,4 +1,3 @@
-
 import java.util.*;
 
 public class TP1Q01 {
