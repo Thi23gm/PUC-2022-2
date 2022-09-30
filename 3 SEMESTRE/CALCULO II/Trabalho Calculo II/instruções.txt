@@ -1,0 +1,6 @@
+Passo a passo para rodar o código:
+
+1 - baixar vs code ( https://code.visualstudio.com/download )
+2 - abrir pasta do codigo
+3 - baixar a extensao Java no vscode ( Extension pack for Java )
+4 - Executar código do arquivo principal.java

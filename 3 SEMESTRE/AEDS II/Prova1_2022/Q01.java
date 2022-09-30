@@ -3,7 +3,7 @@ import java.util.Scanner;
 
 public class Q01 {
     public static void main(String[] args) {
-        int numEntradas, temp = 0;
+        int numEntradas = 0;
         Scanner sn = new Scanner(System.in);
         numEntradas = sn.nextInt();
         int[] vet = new int[numEntradas];

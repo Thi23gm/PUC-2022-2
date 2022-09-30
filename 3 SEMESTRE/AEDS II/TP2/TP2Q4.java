@@ -2,6 +2,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 class Games{
@@ -198,13 +199,18 @@ class Games{
     }
 
     public static String stringToDate(String s) throws ParseException {
-		/*String format = "MMM/yyyy";
-        Date d = new SimpleDateFormat("MMM dd, yyyy", Locale.ENGLISH).parse(s.trim());
-        SimpleDateFormat sdf = new SimpleDateFormat(format);
-        System.out.println(sdf.format(d).toUpperCase());*/
-        String d;
+        if (s.length() > 8) {
+            String format = "MMM/yyyy";
+            Date d = new SimpleDateFormat("MMM dd, yyyy", Locale.ENGLISH).parse(s.trim());
+            SimpleDateFormat sdf = new SimpleDateFormat(format);
+            return sdf.format(d);
+        } else {
+            s.replace(" ", "/");
+            return s;
+        }
+        /*String d;
         String[] data = s.split(" ");
-		return (d = data[0] + "/" + data[2]);
+		return (d = data[0] + "/" + data[2]);*/
 	}
 
     public static boolean IsLenguage( String linha, int i){
@@ -222,13 +228,12 @@ class Games{
         return s;
     }
 
-
     public Games ler(String entrada) throws IOException, ParseException{
         Games resp = new Games();
         String linha, aux = "";
         int cont = 0;
         String[] arr = new String[100];
-        FileReader isr = new FileReader("tmp/games.csv");
+        FileReader isr = new FileReader("/tmp/games.csv");
         BufferedReader br = new BufferedReader(isr);
 
         while((linha = br.readLine()) != null){
@@ -239,24 +244,45 @@ class Games{
                         aux += linha.charAt(i);
                         i++;
                     }
-                    System.out.println(aux);
+                    //System.out.println(aux);
                     resp.setApp_id(Integer.parseInt(aux));
+                    //System.err.println(aux);
+                    aux = "";
                     i++;
-                    aux = "";
-                    while(linha.charAt(i) != ','){ // Name
-                        aux += linha.charAt(i);
-                        i++;    
+                    if (linha.charAt(i) == '\"') {
+                        i++;
+                        while(linha.charAt(i) != '\"'){ // Name
+                            aux += linha.charAt(i);
+                            i++;    
+                        }
+                        i++;
+                    } else {
+                        while(linha.charAt(i) != ','){ // Name
+                            aux += linha.charAt(i);
+                            i++;    
+                        }
                     }
-                    System.out.println("1: " + aux);
+                    //System.out.println("1: " + aux);
                     resp.setName(aux);
-                    i += 2;
+                    i += 1;
                     aux = "";
-                    while(linha.charAt(i) != '\"'){ // Release_date
-                        aux += linha.charAt(i);
-                        aux = aux.replaceAll("\"", "");
+                    if (linha.charAt(i) == '\"') {
+                        i++;
+                        while(linha.charAt(i) != '\"'){ // Release_date
+                            aux += linha.charAt(i);
+                            aux = aux.replaceAll("\"", "");
+                            i++;
+                        }
+                    } else {
+                        i++;
+                        while(linha.charAt(i) != ',') {
+                            aux += linha.charAt(i);
+                            i++;
+                        }
                         i++;
                     }
-                    System.out.println("2: " +aux);
+                    
+                    //System.out.println("2: " +aux);
                     resp.setReleaseDate(stringToDate(aux));
                     i+=2;
                     aux = "";
@@ -264,7 +290,7 @@ class Games{
                         aux += linha.charAt(i);
                         i++;
                     }
-                    System.out.println("3: " +aux);
+                    //System.out.println("3: " +aux);
                     resp.setOwners(aux);
                     i++;
                     aux = "";
@@ -272,7 +298,7 @@ class Games{
                         aux += linha.charAt(i);
                         i++;
                     }
-                    System.out.println("4: " + aux);
+                    //System.out.println("4: " + aux);
                     resp.setAge(Integer.parseInt(aux));
                     i++;
                     aux = "";
@@ -280,7 +306,7 @@ class Games{
                         aux += linha.charAt(i);
                         i++;
                     }
-                    System.out.println("5: " + aux);
+                    //System.out.println("5: " + aux);
                     resp.setPrice(Float.parseFloat(aux));
                     i++;
                     aux = "";
@@ -288,7 +314,7 @@ class Games{
                         aux += linha.charAt(i);
                         i++;
                     }
-                    System.out.println("6: " + aux);
+                    //System.out.println("6: " + aux);
                     resp.setDlc(Integer.parseInt(aux));
                     i ++;
                     aux = "";
@@ -303,19 +329,31 @@ class Games{
                     aux = aux.replaceAll("/n", "");
                     aux = aux.replaceAll("/r", "");
                     aux = aux.replaceAll("]", "");
-                    System.out.println("Lenguages: " + String.join(", ", stringToArray(aux)));
+                    //System.out.println("Lenguages: " + String.join(", ", stringToArray(aux)));
                     resp.setLenguages(stringToArray(aux));
                     i ++;
                     aux = "";
                     cont = 0;
-                    while(linha.charAt(i) != ',' ){
-                        i++;
-                    } i++;
-                    while(linha.charAt(i) != ','){ // Website
-                        aux += linha.charAt(i);
+                    while(linha.charAt(i) != ','){
                         i++;
                     }
-                    System.out.println("8: " +aux);
+                    if (linha.charAt(i + 1) != '\"') {
+                        i++;
+                        while(linha.charAt(i) != ','){ // Website
+                            aux += linha.charAt(i);
+                            i++;
+                        }
+                        i++;
+                    } else {
+                        i+= 2;
+                        while(linha.charAt(i) != '\"'){ // Website
+                            aux += linha.charAt(i);
+                            i++;
+                        }
+                        i++;
+                    }
+                    if (linha.charAt(i) == ',') i++;
+                    //System.out.println("8: " +aux);
                     resp.setWebsite(aux);
                     i++;
                     aux = "";
@@ -323,7 +361,7 @@ class Games{
                         aux += linha.charAt(i);
                         i++;
                     }
-                    System.out.println("9: " + aux);
+                    //System.out.println("9: " + aux);
                     resp.setWindows(Boolean.parseBoolean(aux));
                     i++;
                     aux = "";
@@ -331,7 +369,7 @@ class Games{
                         aux += linha.charAt(i);
                         i++;
                     }
-                    System.out.println("10: " + aux);
+                    //System.out.println("10: " + aux);
                     resp.setMac(Boolean.parseBoolean(aux));
                     i++;
                     aux = "";
@@ -339,7 +377,7 @@ class Games{
                         aux += linha.charAt(i);
                         i++;
                     }
-                    System.out.println(aux);
+                    //System.out.println(aux);
                     resp.setLinux(Boolean.parseBoolean(aux));
                     i++;
                     aux = "";
@@ -353,7 +391,7 @@ class Games{
                         aux1 += linha.charAt(i);
                         i++;
                     } 
-                    System.out.println(aux + " -- " + aux1);
+                    //System.out.println(aux + " -- " + aux1);
                     resp.setUpVotes((int)Math.round(upVotes(aux, aux1)));
                     i++;
                     aux = "";
@@ -362,9 +400,9 @@ class Games{
                         i++;
                     }
                     int[] aux2 = parseAvg_Pt(aux);
-                    System.out.println(aux2[0]);
+                    //System.out.println(aux2[0]);
                     resp.setAvg_pt1(aux2[0]);
-                    System.out.println(aux2[1]);
+                    //System.out.println(aux2[1]);
                     resp.setAvg_pt2(aux2[1]);
                     i ++;
                     aux = "";
@@ -395,38 +433,82 @@ class Games{
 
 }
 
-class TP2Q01{
+class TP2Q4{
+
+    public static boolean pesquisaBinaria(Games[] game, String nome, int n){
+        int meio;   
+        int inicio = 0;   
+        int fim = n - 1;   
+        while (inicio <= fim) {   
+             meio = (inicio + fim)/2;   
+             if (nome.compareTo(game[meio].getName().trim()) == 0)   
+                      return true;   
+             if (nome.compareTo(game[meio].getName().trim()) < 0)   
+                      fim = meio - 1;   
+             else   
+                      inicio = meio + 1;   
+        }   
+        return false;   
+
+    }
 
     public static boolean isFim(String s){
         return (s.length() == 3 && s.charAt(0) == 'F' && s.charAt(1)== 'I' && s.charAt(2) == 'M');
     }
 
+    /*public static void log(int comp , long tempo){
+        Arq.openWrite("729051_sequencial.txt");
+
+        Arq.print("729051"+'\t'+tempo+'\t'+comp);
+
+        Arq.close();
+    }*/
+
     public static void main(String[] args) throws IOException, ParseException {
         Scanner scn = new Scanner(System.in);
-        Games[] game = new Games[1000];
-        String[] entrada = new String[1000];
+        Games[] game = new Games[4404];
+        String[] entrada = new String[4404];
+        String[] nomes = new String[1000];
         int numEntradas = 0;
+        int numNomes = 0;
+        int comparacoes = 0;
 
         do{
             entrada[numEntradas] = scn.nextLine();
         }while(isFim(entrada[numEntradas++]) == false );
         numEntradas--;
 
-        for(int i = 0; i < numEntradas; i++){
-            if(entrada[i].length() >= 1){
-                game[i] = new Games();
-                game[i] = game[i].ler(entrada[i]);
-                System.out.print(game[i].getApp_id() + " " + game[i]. getName().trim() + " " + game[i].getReleaseDate().trim() + " " + game[i].getOwners().trim() + " " + game[i].getAge() + " " + game[i].getPrice() + " " + game[i].getDlc() + " [" + String.join(", ", game[i].getLenguage()).trim() + "] " + game[i].getWebsite().trim() + " " + game[i].getWindows() + " " + game[i].getMac() + " " + game[i].getLinux() + " " + (int)game[i].getUpVotes() + "% " + game[i].getAvg_pt1() + "h " + game[i].getAvg_pt2() + "m " + game[i].getDevelopers().trim() + " [");
-                if(game[i].getGenres()[0] != null){
-                    System.out.print(String.join(", ", game[i].getGenres()).trim());
-                }else{
-                    String[] arr = new String[1];
-                    arr[0] = null;
-                    System.out.print(arr[0]);
-                }
-                System.out.println("] ");
-            }
+        for(int i = 0 ;  i< numEntradas ; i++){
+            game[i] = new Games();
+            game[i] = game[i].ler(entrada[i]);
         }
+
+        do{
+            nomes[numNomes] = scn.nextLine();
+        }while(isFim(nomes[numNomes++]) == false );
+        numNomes--;
+
+        //long tempoinicio = System.currentTimeMillis();
+        int aux;
+
+        for(int i = 0; i < numNomes; i++){
+            aux = 0;
+            if(pesquisaBinaria(game , nomes[i], numEntradas) == true){
+                System.out.println("SIM");
+            }else{
+                System.out.println("NAO");
+            }
+            /*for(int j = 0; j < numEntradas; j++){
+                if(nomes[i].compareTo(game[j].getName()) == 0){
+                    comparacoes++;
+                    aux = 1;
+                    j+=numEntradas;
+                }*/
+        }
+
+        //long tempo = System.currentTimeMillis() - tempoinicio;
+
+        //log(comparacoes , tempo);
 
     }
 }
